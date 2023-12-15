@@ -187,6 +187,7 @@ body {
 .overlay-nav a {
     text-decoration: none;
     color: var(--text);
+    padding: 0.2em 1em;
 }
 
 .overlay-nav a:hover {
@@ -456,10 +457,15 @@ body {
     height: 100%;
     min-height: 80vh;
     background-color: var(--footer);
-    padding: 1em;
     border-radius: 10px;
     box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.1);
     color: var(--text);
+    background-color: var(--bg);
+
+    margin-top: 5em;
+    width: 100%;
+    padding-top: 2em;
+    flex: 1;
 }
 
 .dashboard-header {
@@ -479,6 +485,10 @@ body {
     padding: 0 0.5em;
 }
 
+.prj-title-holder {
+    display: block;
+}
+
 .db-header-item {
     padding: 0 1em;
 }
@@ -496,37 +506,6 @@ body {
     width: 0; 
     height: 1.2em; 
     border: 1px solid #666; margin: 0;
-}
-
-/* Style the dropdown box */
-.dashboard-tab {
-    align-self: flex-start;
-    justify-self: flex-start;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-evenly;
-    background-color: var(--footer);
-    padding: 2em;
-    border-radius: 10px;
-    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.1);
-    color: var(--text);
-}
-
-.vertical {
-    flex-direction: column;
-}
-
-.dashboard-tab label {
-    font-family: Verdana;
-    padding: 0.5em;
-}
-
-.dashboard-tab select {
-    padding: 5px;
-    border-color: var(--header);
-    background-color: var(--bg);
-    color: var(--text);
 }
 
 .project-list {
@@ -553,6 +532,15 @@ body {
     margin: 0 8%;
 }
 
+.db-sidebar {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-width: 300px;
+    min-height: 500px;
+    background-color: var(--footer);
+}
 
 /*
 *
@@ -754,6 +742,10 @@ input:checked + .slider:before {
         padding: 0;
     }
 
+    .dashboard {
+        padding-top: 0;
+    }
+
     .dashboard-header {
         flex-direction: column;
         align-items: center;
@@ -763,6 +755,10 @@ input:checked + .slider:before {
     .db-prj-title, .db-header-item, .db-header-end {
         padding: 1em;
         text-align: center;
+    }
+
+    .prj-title-holder {
+        padding: 1em;
     }
 
     .db-header-end {
