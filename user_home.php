@@ -73,7 +73,25 @@
 
             <hr class="dashboard-hr">
 
-            <div id="worker" class="db-worker-view">WORKERS</div>
+            <div id="worker" class="db-worker-view">
+                <div class="db-worker-tab">
+                    <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
+                                                        
+                        <label for="name">Search Worker:</label>
+                        <input type="text" id="name" name="name" placeholder="Name" required>
+                        
+                        <label>Status:</label>
+                        <input type="text" id="status" name="status" placeholder="On Duty"  required>
+                    </form>
+                </div>
+
+                <div class="db-worker-tab">
+
+                </div>
+                <div class="db-worker-tab">
+
+                </div>
+            </div>
             <div id="material" class="db-material-view">MATERIALS</div>
             <div id="cost" class="db-cost-view">COST</div>
             <div id="overview" class="db-overview">HELLO</div>
