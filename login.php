@@ -1,4 +1,4 @@
-<?php session_start() ?>
+<?php session_start(); ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -41,6 +41,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["Login"])) {
         if ($details["Password"] != $passToCheck)
             $LoginError = "Incorrect Password.";
         else{
+            $_SESSION['User'] = $details['UID'];
+            $_COOKIE['User'] = $details['UID'];
+            setcookie('User', $details['UID']);
             $conn->close();            
             header("Location: user_home.php");        
         }

@@ -1,4 +1,4 @@
-<?php session_start() ?>
+<?php session_start(); ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -7,6 +7,16 @@
 ?>
 
 <body>
+
+    <?php
+        if ((!isset($_SESSION['User'])) || (!isset($_COOKIE['User']))) {
+            header("Location: login.php");
+        }
+        else {
+
+        }
+    ?>
+
     <?php
         $extra_buttons = array(
             array("name"=>"Logout", "href"=>"login.php", "class"=>"button")
@@ -24,7 +34,7 @@
             
         }
 
-        const all_views = ['overview', 'worker', 'material', 'cost'];
+        const all_views = ['overview', 'worker', 'material', 'cost', 'machinery', 'env-impact'];
 
         function showView(view) {
             document.getElementById(view).style.display = 'flex';
@@ -51,6 +61,8 @@
             <button onclick="showView('worker')">Workers</button>
             <button onclick="showView('material')">Materials</button>
             <button onclick="showView('cost')">Cost</button>
+            <button onclick="showView('machinery')">Machinery</button>
+            <button onclick="showView('env-impact')">Environment</button>
             <button>Account</button>
         </div>
 
@@ -74,33 +86,106 @@
             <hr class="dashboard-hr">
 
             <div id="worker" class="db-worker-view">
+
+                <!-- select and update worker details -->
                 <div class="db-worker-tab">
                     <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
-                                                        
+                        
+                        <label>Worker Type:</label>
+                        <select name="worker-type" id="type">
+                            <option value="present">Full time</option>
+                            <option value="present">Part time</option>
+                            <option value="on-leave">Contract</option>
+                        </select>
+
                         <label for="name">Search Worker:</label>
                         <input type="text" id="name" name="name" placeholder="Name" required>
                         
                         <label>Status:</label>
-                        <input type="text" id="status" name="status" placeholder="On Duty"  required>
+                        <select name="woker-status" id="status">
+                            <option value="present">Present</option>
+                            <option value="on-leave">On Leave</option>
+                        </select>
+
+                        <label for="task">Assign task:</label>
+                        <input type="text" id="itask" name="wo-task" placeholder="Task" required>
+
+                        <button>Update</button>
                     </form>
                 </div>
 
+                <!-- display selected workers history and tasks assigned -->
                 <div class="db-worker-tab">
+                    <label>Task History:</label>
+                    <p>Current task: Some work</p>
+                    <p>From: 00-00 to 00-00</p>
+                    <p>Some other work</p>
+                    <hr class="dashboard-hr">
+
+                    <label>Days present:</label>
+                    <p>00-00-00</p>
+                    <p>00-00-00</p>
+                    <p>00-00-00</p>
+                    <p>00-00-00</p>
+                    <p>00-00-00</p>
+                    <p>00-00-00</p>
+                    <p>00-00-00</p>
+                    <p>00-00-00</p>
+                    <p>00-00-00</p>
+                    <p>00-00-00</p>
+                    <p>00-00-00</p>
+                    <p>00-00-00</p>
+                    <p>00-00-00</p>
 
                 </div>
-                <div class="db-worker-tab">
 
+                <!-- display all workers in selected field -->
+                <div class="db-worker-tab">
+                    <label>Other workers:</label>
+                    <p>Worker1</p>
+                    <p>Worker1</p>
+                    <p>Worker1</p>
+                    <p>Worker1</p>
+                    <p>Worker1</p>
+                    <p>Worker1</p>
                 </div>
             </div>
-            <div id="material" class="db-material-view">MATERIALS</div>
+            
+            <div id="material" class="db-material-view">
+                <div class="db-material-tab-left">
+                    <label>Materials:</label>
+                    <button>Bricks</button>
+                    <button>Stone</button>
+                    <button>Sand</button>
+                    <button>Steel</button>
+                    <button>Cement</button>
+                    <button>Paint</button>
+                    <button>Plumbing material</button>
+                    <button>Wiring</button>
+                </div>    
+                <div class="db-material-tab-right">
+                    <label>Supplier:</label>
+                    <p>ABC Co.</p>
+                    <label>Cost:</label>
+                    <p>$999.99</p>
+                    <label>Quantity Bought:</label>
+                    <p>5000kg</p>
+                    <label>Quantity Used:</label>
+                    <p>3000kg</p>
+                    <label>Quantity Available:</label>
+                    <p>2000kg</p>
+                </div>
+            </div>
+
             <div id="cost" class="db-cost-view">COST</div>
             <div id="overview" class="db-overview">HELLO</div>
-            
+            <div id="machinery" class="db-machine-view">MACHINERY</div>
+            <div id="env-impact" class="db-env-view">ENV IMPACT</div>
         </div>
     </div>
 
     <script>
-        showView('overview');
+        showView('worker');
     </script>
 
     <?php

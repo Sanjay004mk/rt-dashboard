@@ -16,15 +16,15 @@
 :root {
     
     --light-bg: #E0F7FA;
-    --light-header: #FFFFFF;
-    --light-footer: #FeFeFe;
+    --light-header: #f0eaea;
+    --light-footer: #ffffff;
     --light-text: #37474F;
 
     --accent1: #2196F3;
     --accent2: #4CAF50;
 
-    --dark-bg: #121212;
-    --dark-header: #263238;
+    --dark-bg: #202a33;
+    --dark-header: #1f2c33;
     --dark-footer: #1C2331;
     --dark-text: #BDBDBD;
 
@@ -305,7 +305,7 @@ body {
     position: absolute;
     right: 4%;
     cursor: pointer;
-    color: lightgray;
+    color: var(--text);
 }
 
 .register input {
@@ -491,6 +491,10 @@ body {
     display: block;
 }
 
+.prj-title-holder:hover {
+    background-color: var(--header);
+}
+
 .db-header-item {
     padding: 0 1em;
 }
@@ -515,11 +519,69 @@ body {
     margin-left: auto;
 }
 
+
+.db-view button {
+    font-size: 1.1em;
+    font-family: Verdana;
+    color: var(--text);
+    padding: 1em;
+    margin-top: 1em;
+    border: 2px solid;
+    border-radius: 2px;
+    background-color: var(--accent);
+    border-color: var(--accent);
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.1); 
+}
+
+.db-view a {
+    color: var(--text);
+}
+
+.db-view input, select {
+    font-size: 1.1em;
+    border: 0;
+    background-color: var(--bg);
+    padding: 1em;
+    margin-bottom: 0.5em;
+    margin-top: 0.5em;
+    color: var(--text);
+    width: 100%;
+    border-radius: 5px;
+}
+
+.db-view h2 {
+    align-self: flex-start;
+    text-align: left;
+    font-family: Verdana;
+    font-size: 1.5em;
+    
+    font-weight: bolder;
+    color: var(--text);
+    margin-bottom: 0;
+}
+
+.db-view p {
+    font-size: 1em;
+    margin-bottom: 0;
+    text-align: left;
+}
+
+.db-view label {
+    align-self: flex-start;
+    text-align: left;
+    font-weight: bold;
+    font-family: Calibri;
+    font-size: 1.3em;
+    color: var(--text);
+}
+
+
+
 .project-list {
     display: none;
     position: absolute;
     position: absolute;
-    background-color: var(--bg);
+    background-color: var(--footer);
     min-width: 160px;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     top: 3em;
@@ -586,14 +648,15 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    align-items: center;
-    min-height: 70vh;
-    min-width: 30%;
+    align-items: flex-start;
+    height: 70vh;
+    width: 30%;
     margin: 0 1% 1%;
     padding: 1em;
     border-radius: 10px;
     background-color: var(--footer);
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
 }
 
 .db-material-view {
@@ -605,7 +668,68 @@ body {
     min-height: 70vh;
 }
 
+.db-material-tab-left, .db-material-tab-right {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    height: 70vh;
+    margin: 0 1% 1%;
+    padding: 1em;
+    border-radius: 10px;
+    background-color: var(--footer);
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+}
+
+.db-material-tab-left {
+    width: 30%;
+    align-items: center;   
+}
+
+.db-material-tab-left button {
+    width: 100%;
+    background-color: var(--bg);
+    border: 0;
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+    cursor: pointer
+}
+
+.db-material-tab-left button:hover {
+    width: 100%;
+    background-color: var(--header);
+    border: 0;
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+    cursor: pointer
+}
+
+.db-material-tab-right {
+    width: 70%;
+}
+
+.db-material-tab-right p {
+    padding: 0.1em 0 2em;
+}
+
 .db-cost-view {
+    display: none;display: flex;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    min-height: 70vh;
+}
+
+.db-machine-view {
+    display: none;display: flex;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    min-height: 70vh;
+}
+
+.db-env-view {
     display: none;display: flex;
     width: 100%;
     height: 100%;
@@ -622,62 +746,6 @@ body {
     align-items: center;
     min-height: 70vh;
 }
-
-.db-view button {
-    font-size: 1.1em;
-    font-family: Verdana;
-    color: var(--text);
-    padding: 1em;
-    margin-top: 1em;
-    border: 2px solid;
-    border-radius: 2px;
-    background-color: var(--accent);
-    border-color: var(--accent);
-    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.1); 
-}
-
-.db-view a {
-    color: var(--text);
-}
-
-.db-view input {
-    font-size: 1.1em;
-    border: 0;
-    background-color: var(--bg);
-    padding: 1em;
-    margin-bottom: 0.5em;
-    margin-top: 0.5em;
-    color: var(--text);
-    width: 100%;
-    border-radius: 5px;
-}
-
-.db-view h2 {
-    align-self: flex-start;
-    text-align: left;
-    font-family: Verdana;
-    font-size: 1.5em;
-    
-    font-weight: bolder;
-    color: var(--text);
-    margin-bottom: 0;
-}
-
-.db-view p {
-    font-size: 1em;
-    margin-bottom: 0;
-}
-
-.db-view label {
-    align-self: flex-start;
-    text-align: left;
-    padding-top: 2em;
-    font-family: Calibri;
-    font-size: 1.3em;
-    color: var(--text);
-}
-
-
 
 .row {
     display: flex;
@@ -927,4 +995,33 @@ input:checked + .slider:before {
     .db-vl {
         display: none;
     }
+
+    .db-worker-view {
+        flex-direction: column;
+    }
+
+    .db-worker-tab {
+        width: 90%;
+        height: 100%;
+    }
+}
+
+/*
+ *
+ * custom scrollbar
+ *
+*/
+/* width */
+::-webkit-scrollbar {
+width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+background: var(--bg);
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+background: var(--header);
 }
