@@ -5,11 +5,50 @@
     function closeNav() {
         document.getElementById("overlaynav").style.display = "none";
     }
+    function clearLogin() {
+        document.cookie = 'User=; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    }
 </script>
+
+
+
 
 <?php
     $extras = "";
-    if (isset($extra_buttons)) {
+    if (isset($islogout)) {
+        $extras = '<a class="button" href="login.php" onclick="clearLogin()">Logout</a>';
+    }
+    else if (isset($_COOKIE['User'])) {
+        $uid = $_COOKIE['User'];
+
+        // Process the data or perform any necessary actions
+        $servername = "localhost";
+        $username = "root";
+        $password = "";
+        $dbname = "users";
+
+        //Create connection
+        $conn = new mysqli($servername, $username, $password, $dbname);
+        // Check connection
+        if ($conn->connect_error) {
+            die("Connection failed: " . $conn->connect_error);
+        }
+
+        $get_email = 'SELECT * FROM `user details` WHERE `UID` = "'.$uid.'"';
+        $result = $conn->query($get_email);
+        // user doesn't exsist, so create
+        if ($result->num_rows <= 0) {
+           $name = "NULL";
+        }
+        else {
+            $det = $result->fetch_assoc();
+            $name = $det['Name'];
+        }
+        
+        $conn->close();
+        $extras = '<a class="button" href="user_home.php">'.$name.'</a>';
+    }
+    else if (isset($extra_buttons)) {
         foreach ($extra_buttons as $button) {
             $href = $button['href'];
             $class = "";
@@ -19,10 +58,13 @@
             $extras = $extras.'<a '.$class.' href="'.$href.'">'.$bname.'</a>';
         }
     }
+    if (!isset($home))
+        $home = "index.php";
+    
 ?>
 
 <header class="home-header">
-    <a href="index.php" class="logo-group">
+    <a href="<?php echo $home; ?>" class="logo-group">
         <!-- <img src="logo.svg" alt="Logo" width=50 height=50> -->
         <div class="website-title">CipherSphere</div>
     </a>

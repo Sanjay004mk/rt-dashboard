@@ -18,6 +18,8 @@
     ?>
 
     <?php
+        $home = $_SERVER['PHP_SELF'];
+        $islogout = true;
         $extra_buttons = array(
             array("name"=>"Logout", "href"=>"login.php", "class"=>"button")
         );
