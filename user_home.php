@@ -12,9 +12,6 @@
         if ((!isset($_SESSION['User'])) || (!isset($_COOKIE['User']))) {
             header("Location: login.php");
         }
-        else {
-
-        }
     ?>
 
     <?php
@@ -74,9 +71,9 @@
                 <div class="prj-title-holder">                    
                     <span id="prjTitle" class="db-prj-title">Current Project</span><i class="fa fa-thin fa-chevron-down" id="prjListDD"></i>
                     <div id="project-dropdown" class="project-list" >
-                        <a href="#">Project Other</a><hr>
-                        <a href="#">Yet another project</a><hr>
-                        <a href="#">YOLO</a>
+                        <a href="#">Project 1</a><hr>
+                        <a href="#">Project 2</a><hr>
+                        <a href="#">Project 3</a>
                     </div>
                 </div>
                 

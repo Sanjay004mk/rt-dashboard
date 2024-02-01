@@ -11,20 +11,8 @@
 
 <?php
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["Login"])) {
-    // Replace these variables with your actual database connection details
-    $servername = "localhost";
-    $username = "root";
-    $password = "";
-    $dbname = "users";
-
-    // Create a connection
-    $conn = new mysqli($servername, $username, $password, $dbname);
-
-    // Check the connection
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
-    }
-
+    $conn = $GLOBALS['userdb'];
+    
     // User to check (replace 'username_to_check' with the actual username)
     $userToCheck = $_POST["email"];
     $passToCheck = $_POST["password"];
@@ -44,15 +32,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["Login"])) {
             $_SESSION['User'] = $details['UID'];
             $_COOKIE['User'] = $details['UID'];
             setcookie('User', $details['UID']);
-            $conn->close();            
             header("Location: user_home.php");        
         }
     } else {
         $LoginError = "Email doesn't exist.";
     }
-    
-    // Close the connection
-    $conn->close();
 }
 ?>
 
