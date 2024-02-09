@@ -1,104 +1,187 @@
-<?php session_start(); ?>
-<!DOCTYPE html>
-<html lang="en">
-
 <?php
-    include("parts/html_head.php");
-?>
+// Start the session
+session_start();
 
-<body>
+// Check if the 'User' cookie is set
+if (isset($_COOKIE['User'])) {
+    // Redirect to user_home.php if the user is already logged in
+    header("Location: user_home.php");
+    exit();
+}
 
-<?php
+// Database connection details
+$servername = "localhost";
+$dbUsername = "root";
+$dbPassword = "";
+$dbName = "users";
+
 // Check if the form is submitted
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
-    // Get form data
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Retrieve user input
     $name = $_POST["name"];
     $email = $_POST["email"];
-    $phone = $_POST["phone"];
     $pass = $_POST["password"];
+    $type = $_POST["type"];
     $uid = crc32($email);
 
-    // Process the data or perform any necessary actions
-    $servername = "localhost";
-    $username = "root";
-    $password = "";
-    $dbname = "users";
+    // Connect to MySQL
+    $conn = new mysqli($servername, $dbUsername, $dbPassword, $dbName);
 
-    //Create connection
-    $conn = new mysqli($servername, $username, $password, $dbname);
-    // Check connection
+    // Check the connection
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
     }
+    // Prepare and execute a query to retrieve user details
+    $stmt = $conn->prepare("SELECT Name FROM `user details` WHERE Email = ?");
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $stmt->bind_result($name);
 
-    $check_if_email_exists = 'SELECT * FROM `user details` WHERE `Email` = "'.$email.'"';
+    // Fetch the result
+    if ($stmt->fetch()) {
+        $stmt->close();
+        $conn->close();
 
-    // user doesn't exsist, so create
-    if ($conn->query($check_if_email_exists)->num_rows <= 0) {
-        $create_user = 'INSERT INTO `user details` (`Name`, `Phone Number`, `Email`, `Password`, `UID`) VALUE ("'.$name.'", "'.$phone.'", "'.$email.'", "'.$pass.'", "'.$uid.'")';
-        if ($conn->query($create_user) === FALSE) {
-            $CSERROR = "<P>Failed to create account!</p>";
-        }
-        else
-            header("Location: user_home.php");
-    }
-    else {
-        $CSERROR = "<P>Email already exists!</p>";
-    }
-    
+        
+        $errorMessage = "Email already exists.";
+
+    } else {
+
+        $stmt->close();    
+        // Prepare and execute a query to retrieve user details
+    $stmt = $conn->prepare("INSERT INTO `user details` (UID, Name, Email, Password, Type) values (?, ?, ?, ?, ?)");
+    $stmt->bind_param("isssi", $uid, $name, $email, $pass, $type);
+    $stmt->execute();
+
+    $stmt->close();
     $conn->close();
+    // Set the user's UID in a cookie
+    $_SESSION['User'] = $uid;
+    $_COOKIE['User'] = $uid;
+    setcookie('User', $uid, time() + 86400 * 30);
+
+    // Redirect to user_home.php
+    header("Location: user_home.php");
+    exit();
+    // Close the statement and connection
+    }
 }
 ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Signup - CipherSphere Construction Monitoring</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <!-- Font Awesome CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
 
-    <?php 
-        $extra_buttons = array(
-            array("name"=>"Login", "href"=>"login.php", "class"=>"button")
-        );
-        include("parts/header.php");
-    ?>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <!-- CipherSphere logo -->
+        <a class="navbar-brand" href="#">CipherSphere</a>
 
-    <div class="main-content">
-        <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
-            <div class="register">
+        <!-- Navbar toggle button for mobile -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-                <h2>Register</h2>
-                <p>Please fill in this form to create an account.</p>
-                <hr>
-                
-                <label for="name">Name:</label>
-                <input type="text" id="name" name="name" placeholder="Full Name" required>
-                
-                <label for="phone">Phone Number:</label>
-                <input type="tel" id="phone" name="phone" pattern="[0-9]{10}" placeholder="eg: 1234567890"  required>
-                
-                
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" placeholder="eg: doe@jon.com" required>
-                
-                <label for="password">Password:</label>
-                <div class="showpsw"><input type="password" id="password" name="password" placeholder="Enter new password"  required><i class="fa fa-eye" id="p-eye"></i></div>
-                <!-- <div class="showpsw"><label for="password">Show Password</label><input type="checkbox" onclick="togglePassword('p')"></div> -->
-                
-                <label for="confirmPassword">Confirm Password:</label>
-                <div class="showpsw"><input type="password" id="confirmPassword" name="confirmPassword" placeholder="Repeat password"  required><i class="fa fa-eye" id="c-eye"></i></div>
-                <!-- <div class="showpsw"><label for="confirmPassword">Show Password</label><input type="checkbox" onclick="togglePassword('c')"></div> -->
-               
-                <hr>
-                <p>By creating an account you agree to our <a href="#">Terms & Privacy</a>.</p>
-
-                <button type="submit" name="submit" value="submit">Signup</button>
-
-                <p style="text-align: center">Already have an account? <a href="login.php">Login</a>.</p>
-
-            </div>
-        </form>
+        <!-- Navbar items -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="index.php">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">About</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="login.php">Login/Signup</a>
+                </li>
+            </ul>
+        </div>
     </div>
-        
-    <?php
-        include("parts/footer.php");
-        include("parts/showpsw.php");
-    ?>
+</nav>
 
+<!-- Content Section -->
+<div class="container mt-4">
+    <h1>Register</h1>
+
+    <!-- Display error message if exists -->
+    <?php if (isset($errorMessage)): ?>
+        <div class="alert alert-danger" role="alert">
+            <?php echo $errorMessage; ?>
+        </div>
+    <?php endif; ?>
+
+    <!-- Login Form -->
+    <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
+    <div class="mb-3">
+            <label for="name" class="form-label">Name</label>
+            <input type="text" class="form-control" id="name" name="name" placeholder="Enter your name" required>
+        </div>
+        <div class="mb-3">
+            <label for="email" class="form-label">Email address</label>
+            <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <div class="input-group">
+                <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
+                <div class="input-group-append">
+                    <span class="input-group-text" style="cursor: pointer;" onclick="togglePasswordVisibility()">
+                        <i class="fas fa-eye"></i>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="mb-3">
+                <label for="type" class="form-label">Type</label>
+                <select class="form-select" id="type" name="type">
+                  <option value="0">Manager</option>
+                  <option value="1">Stakeholder</option>
+                </select>
+              </div>
+
+        <!-- Create a new account button -->
+        <p>Already have an account? <a href="login.php">Login.</a></p>
+
+        <!-- Submit button -->
+        <button type="submit" class="btn btn-success">Sign up</button>
+    </form>
+</div>
+
+
+
+<!-- Bootstrap JS and jQuery (Make sure to include Popper.js if using Bootstrap's JS) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Font Awesome JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+
+<!-- Script to toggle password visibility -->
+<script>
+    function togglePasswordVisibility() {
+        var passwordInput = document.getElementById("password");
+        var eyeIcon = document.querySelector(".fa-eye");
+
+        if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+            eyeIcon.classList.remove("fa-eye");
+            eyeIcon.classList.add("fa-eye-slash");
+        } else {
+            passwordInput.type = "password";
+            eyeIcon.classList.remove("fa-eye-slash");
+            eyeIcon.classList.add("fa-eye");
+        }
+    }
+</script>
 </body>
-
 </html>

@@ -32,8 +32,8 @@ $stmtUser->bind_result($userName, $type);
 $stmtUser->fetch();
 $stmtUser->close();
 
-if ($type == 1) {
-  header("Location: viewer_home.php");
+if ($type == 0) {
+  header("Location: user_home.php");
   exit();
 }
 
@@ -47,7 +47,7 @@ if ($constructionProjectsConn->connect_error) {
 }
 
 // Fetch user's projects from the construction_projects database
-$stmtProjects = $constructionProjectsConn->prepare("SELECT ProjectID, Name FROM `projects` WHERE UID = ?");
+$stmtProjects = $constructionProjectsConn->prepare("SELECT ProjectID, Name FROM `projects` WHERE StkUID = ?");
 $stmtProjects->bind_param("s", $uid);
 $stmtProjects->execute();
 $stmtProjects->bind_result($projectID, $projectName);
@@ -110,7 +110,7 @@ $conn->close();
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto">
           <li class="nav-item">
-            <a class="nav-link" href="index.php">Home</a>
+            <a class="nav-link" href="#">Home</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="logout.php">Logout</a>
@@ -213,77 +213,8 @@ $conn->close();
           </div>
         </div>
 
+
         <div class="container-fluid" id="db-content">
-          <div id="db-workers" class="container row">
-
-            <div class="col-sm-3 mt-5">
-              <div class="mb-3">
-                <label for="type" class="form-label">Type</label>
-                <select class="form-select" id="type" name="type">
-                  <option value="0">Full-time</option>
-                  <option value="1">Part-time</option>
-                  <option value="2">Contract</option>
-                </select>
-              </div>
-
-              <div class="mb-3">
-                <label for="status" class="form-label">Status</label>
-                <select class="form-select" id="status" name="status">
-                  <option value="1">Present</option>
-                  <option value="0">On Leave</option>
-                </select>
-              </div>
-
-              <div class="mb-3">
-                <label for="task" class="form-label">Task</label>
-                <input type="text" class="form-control" id="task" name="task" placeholder="Enter task" required>
-              </div>
-
-              <div class="mb-3">
-                <label for="name" class="form-label">Name</label>
-                <input type="text" class="form-control" id="name" name="name" placeholder="Enter name" required>
-              </div>
-
-              <button onclick="UpdateWorker()" class="btn btn-primary">Update</button>
-            </div>
-            <div class="col-sm-9 mt-5" id="worker-table">
-
-            </div>
-          </div>
-          <div id="db-materials" class="container row">
-
-            <div class="col-sm-3 mt-5">
-              <div class="mb-3">
-                <label for="resource" class="form-label">Resource</label>
-                <input type="text" class="form-control" id="resource" name="resource" placeholder="Enter resource"
-                  required>
-              </div>
-
-              <div class="mb-3">
-                <label for="name" class="form-label">Supplier</label>
-                <input type="text" class="form-control" id="supplier" name="supplier" placeholder="Enter supplier"
-                  required>
-              </div>
-
-              <div class="mb-3">
-                <label for="rcos" class="form-label">Cost</label>
-                <input type="number" class="form-control" id="rcost" name="rcost" placeholder="Enter cost"
-                  required>
-              </div>
-
-              <div class="mb-3">
-                <label for="quantity" class="form-label">Quantity</label>
-                <input type="number" class="form-control" id="quantity" name="quantity" placeholder="Enter quantity"
-                  required>
-              </div>
-
-
-              <button onclick="UpdateMaterial()" class="btn btn-primary">Update</button>
-            </div>
-            <div class="col-sm-9 mt-5" id="material-table">
-
-            </div>
-          </div>
         </div>
       </main>
     </div>
@@ -301,10 +232,11 @@ $conn->close();
     var projectId = null;
     $(document).ready(function () {
       $('#sidebar a.nav-link').on('click', function (e) {
-        //  e.preventDefault();
+        e.preventDefault();
         var section = $(this).text();
         loadContent(section);
       });
+      $('#create-prj-btn').on('click', createProject);
 
       $('[id^="prj"]').each(function () {
         var numericPart = $(this).attr('id').match(/\d+/);
@@ -314,131 +246,37 @@ $conn->close();
           $(this).on('click', function () {
             // Event listener action
             projectId = parseInt(numericPart[0], 10);
+            console.log('Clicked on Project ID:', projectId);
             $('#projects').html($(this).text());
           });
         }
       });
-
-      $('#create-prj-btn').on('click', createProject);
-      loadContent(null);
     });
 
+    // AJAX logic to fetch data based on the section
     function loadContent(section) {
-      $('#db-content').children().hide();
-
-      if (section === "Workers") {
-        $('#db-workers').show();
-        loadWorkerTable();
-      } else if (section === "Materials") {
-        $('#db-materials').show();
-        loadMaterialTable();
-      }
-    }
-
-    function UpdateMaterial() {
-      // Get form data
-      var formData = {
-        "resource": $('#resource').val(),
-        "supplier": $('#supplier').val(),
-        "rcost": $('#rcost').val(),
-        "quantity": $('#quantity').val(),
-        "projectId": projectId,
-        "RequestType": 'UpdateMaterial'
-      };
-
-      // Send data to update_dashboard.php using Ajax
+      if (!projectId)
+        return;
       $.ajax({
-        type: 'POST',
-        url: 'update_dashboard.php',
-        data: formData,
-        success: function (response) {
-          // Handle the response from the server
-          console.log(response);
-          loadMaterialTable();
-          // Add your code here to handle the success response
-        },
-        error: function (error) {
-          // Handle the error from the server
-          console.error(error);
-          // Add your code here to handle the error response
-        }
-      });
-    }
-
-    function UpdateWorker() {
-      // Get form data
-      var formData = {
-        "type": $('#type').val(),
-        "task": $('#task').val(),
-        "name": $('#name').val(),
-        "status": $('#status').val(),
-        "projectId": projectId,
-        "RequestType": 'UpdateWorker'
-      };
-
-      // Send data to update_dashboard.php using Ajax
-      $.ajax({
-        type: 'POST',
-        url: 'update_dashboard.php',
-        data: formData,
-        success: function (response) {
-          // Handle the response from the server
-          
-          loadWorkerTable();
-          // Add your code here to handle the success response
-        },
-        error: function (error) {
-          // Handle the error from the server
-          console.error(error);
-          // Add your code here to handle the error response
-        }
-      });
-    }
-
-    function loadWorkerTable() {
-      // Send data to update_dashboard.php using Ajax
-      $.ajax({
-        type: 'POST',
-        url: 'update_dashboard.php',
+        type: "POST",
+        url: "update_dashboard.php", // Update with your PHP script URL
         data: {
-          "projectId": projectId,
-          "RequestType": 'Workers'
+          "RequestType": section,
+          "projectId": projectId
         },
         success: function (response) {
-          // Handle the response from the server
-          $('#worker-table').html(response);
-          // Add your code here to handle the success response
+          console.log(section);
+          // Update the content dynamically
+          $('#db-content').html(response);
         },
-        error: function (error) {
-          // Handle the error from the server
-          console.error(error);
-          // Add your code here to handle the error response
+        error: function () {
+          // Handle error if needed
+          $('#db-content').html('Error loading ' + section + ' data');
         }
       });
     }
 
-    function loadMaterialTable() {
-      // Send data to update_dashboard.php using Ajax
-      $.ajax({
-        type: 'POST',
-        url: 'update_dashboard.php',
-        data: {
-          "projectId": projectId,
-          "RequestType": 'Materials'
-        },
-        success: function (response) {
-          // Handle the response from the server
-          
-          $('#material-table').html(response);
-          // Add your code here to handle the success response
-        },
-        error: function (error) {
-          // Handle the error from the server
-          console.error(error);
-          // Add your code here to handle the error response
-        }
-      });
-    }
+
 
     function createProject() {
 
