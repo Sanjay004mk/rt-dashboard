@@ -49,7 +49,7 @@ if (isset($_POST['projectId']) && isset($_POST['RequestType']) && $_POST['projec
         $stmtProjects->store_result();
 
         $types = ['Full-time', 'Part-time', 'Contract'];
-        $statii = ['Present', 'On leave'];
+        $statii = ['On leave', 'Present'];
         // Close the connection to the construction_projects database
 
         // Echo the fetched worker information as HTML (replace this with your actual fetched data)
