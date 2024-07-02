@@ -94,7 +94,8 @@ if (isset($_COOKIE['User'])) {
 <!-- Content Section -->
 <div class="container mt-4">
     <h1>Welcome to CipherSphere Construction Monitoring</h1>
-    <p>This platform allows you to monitor construction work efficiently.</p>
+    <p>This platform allows you to monitor construction work efficiently.</p> <br>
+    <p>And works efficiently to provide the users with atmost satisfaction</p>
     <!-- Add more content as needed -->
 </div>
 
